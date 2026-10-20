@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Мастер.Днепр — настройка и установка Windows, драйверов | Северный</title>
+<meta name="description" content="Установка Windows, драйверов, программ и лицензий. Чистка от вирусов, ускорение ноутбука. Только программное обеспечение. Северный, левый берег Днепра." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 5 L85 20 V50 C85 75 50 95 50 95 C50 95 15 75 15 50 V20 Z' fill='%233b6bff'/%3E%3Cpath d='M50 15 L75 26 V50 C75 68 50 84 50 84 C50 84 25 68 25 50 V26 Z' fill='%23fff'/%3E%3Crect x='30' y='30' width='40' height='30' rx='2' fill='%23fff' stroke='%23ffd700' stroke-width='4'/%3E%3Cpath d='M25 62 H75 L80 72 H20 Z' fill='%23ffd700'/%3E%3Cpath d='M36 45 L44 53 L56 38' stroke='%233b6bff' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M64 40 A5 5 0 0 0 57 45 L47 55 A3 3 0 1 1 42 50 L52 40 A5 5 0 0 0 57 33 L62 38 L64 40 Z' fill='%233b6bff'/%3E%3C/svg%3E" />
+
+<style>
+/* =============================================================
+   ПЕРЕМЕННЫЕ И БАЗА (СВЕТЛАЯ ТЕМА)
+   ============================================================= */
+:root{
+  --bg:#f7f9ff;
+  --bg-2:#eff3ff;
+  --card-bg:rgba(255, 255, 255, 0.65); 
+  --card-border:rgba(255, 255, 255, 0.8);
+  --ink:#0a1020;
+  --ink-2:#3b4860;
+  --muted:#6b7891;
+  --line:rgba(59, 107, 255, 0.1);
+  --accent:#3b6bff;
+  --accent-2:#8b3bff;
+  --accent-3:#22c55e;
+  --accent-soft:rgba(59, 107, 255, 0.1);
+  
+  --grad:linear-gradient(135deg, #3b6bff, #8b3bff);
+  --grad-btn:linear-gradient(135deg, rgba(59,107,255,0.9), rgba(42,88,232,0.9));
+  
+  --radius:22px;
+  --shadow-1:0 4px 20px rgba(16,24,40,0.05);
+  --shadow-2:0 10px 40px rgba(16,24,40,0.08);
+  --shadow-glass:0 8px 32px rgba(31, 38, 135, 0.07);
+  --wrap:1160px;
+  
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+
+/* ТЁМНАЯ ТЕМА */
+[data-theme="dark"] {
+  --bg:#0a0d14;
+  --bg-2:#111623;
+  --card-bg:rgba(20, 25, 40, 0.65);
+  --card-border:rgba(255, 255, 255, 0.08);
+  --ink:#ffffff;
+  --ink-2:#b0bbd6;
+  --muted:#7a88a6;
+  --line:rgba(255, 255, 255, 0.08);
+  --accent:#5c85ff;
+  --accent-soft:rgba(92, 133, 255, 0.15);
+  --shadow-1:0 4px 20px rgba(0,0,0,0.3);
+  --shadow-2:0 10px 40px rgba(0,0,0,0.5);
+  --shadow-glass:0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top: 100px;
+}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  padding-bottom: 80px;
+  transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;background:none;border:none}
+.wrap{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 22px}
+::selection{background:rgba(59,107,255,.3)}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.grad-text {
+  background: linear-gradient(90deg, #3b6bff, #8b3bff, #ff5fa2, #3b6bff);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientMove 5s linear infinite;
+}
+
+/* =============================================================
+   ПРЕЛОАДЕР
+   ============================================================= */
+#preloader{
+  position:fixed;inset:0;z-index:9999;background:var(--bg);
+  display:grid;place-items:center;transition:opacity .4s ease,visibility .4s;
+  animation: autoHidePreloader 0.4s 2.5s forwards;
+}
+@keyframes autoHidePreloader {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+#preloader.done{opacity:0;visibility:hidden}
+.pre-in{display:flex;flex-direction:column;align-items:center;gap:18px}
+.pre-logo{
+  width:80px;height:80px;border-radius:18px;display:grid;place-items:center;
+  background:#fff; padding: 10px; box-shadow:var(--shadow-2);
+  animation:preSpin 2s var(--ease) infinite;
+}
+@keyframes preSpin{
+  0%,100%{transform:rotate(-3deg) scale(1);}
+  50%{transform:rotate(3deg) scale(1.05);}
+}
+.pre-bar{width:180px;height:6px;border-radius:6px;background:var(--line);overflow:hidden;}
+.pre-bar::before{
+  content:"";display:block;width:40%;height:100%;border-radius:6px;
+  background:var(--accent); animation:preLoad 1.2s var(--ease) infinite;
+}
+@keyframes preLoad{
+  0%{transform:translateX(-110%)}
+  100%{transform:translateX(280%)}
+}
+
+/* =============================================================
+   ЖИВОЙ ФОН
+   ============================================================= */
+.bg-layer{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;transition:opacity 0.5s;}
+[data-theme="dark"] .bg-layer{opacity: 0.3;}
+.blob{
+  position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;
+  will-change:transform;transition:transform .35s ease-out;
+}
+.blob-1{width:600px;height:600px;background:radial-gradient(circle,#a9c3ff,transparent 70%);top:-200px;right:-100px;}
+.blob-2{width:500px;height:500px;background:radial-gradient(circle,#e0c5ff,transparent 70%);top:40%;left:-150px;}
+.blob-3{width:500px;height:500px;background:radial-gradient(circle,#c5f2e0,transparent 70%);bottom:-200px;right:10%;}
+
+.grid-bg{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(ellipse at center,black 20%,transparent 70%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 20%,transparent 70%);
+}
+
+/* =============================================================
+   ЖИДКОЕ СТЕКЛО (GLASSMORPHISM)
+   ============================================================= */
+.glass {
+  background: var(--card-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+  backdrop-filter: blur(16px) saturate(1.8);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-glass);
+}
+
+/* =============================================================
+   ШАПКА
+   ============================================================= */
+.hdr{
+  position:sticky;top:0;z-index:60;
+  background: var(--card-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom:1px solid var(--line);
+  transition:background 0.5s, border-color 0.5s;
+}
+.hdr-in{display:flex;align-items:center;gap:28px;height:75px; position: relative;}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:17px;letter-spacing:-.01em;}
+.logo-mark{
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  background:#fff; padding: 4px; border: 1px solid var(--line);
+  transition:transform 0.4s var(--spring);
+}
+.logo:hover .logo-mark{transform:scale(1.1) rotate(-5deg);}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{
+  position:relative;font-size:14.5px;font-weight:500;color:var(--ink-2);
+  padding:9px 14px;border-radius:10px;transition:color .2s, background .2s;
+  white-space: nowrap;
+}
+.nav a:hover{color:var(--accent);background:var(--accent-soft)}
+
+/* Переключатели (Тема и Язык) */
+.controls { display: flex; align-items: center; gap: 8px; margin-left: 10px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); font-size: 18px;
+  transition: transform 0.3s var(--spring), background 0.3s;
+}
+.icon-btn:hover { transform: scale(1.1); background: var(--accent); color: #fff; }
+
+.lang-switch {
+  display: flex; background: var(--accent-soft); border-radius: 10px; padding: 3px;
+}
+.lang-switch button {
+  padding: 5px 10px; font-size: 12.5px; font-weight: 700; color: var(--muted);
+  border-radius: 8px; transition: all 0.3s var(--spring);
+}
+.lang-switch button.active { background: #fff; color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+[data-theme="dark"] .lang-switch button.active { background: var(--accent); color: #fff; }
+
+/* --- ВАЖНОЕ ИСПРАВЛЕНИЕ: Скрываем мобильные кнопки на ПК --- */
+.mobile-controls { display: none; }
+
+.burger {
+  display: none;
+  font-size: 26px;
+  color: var(--ink);
+  padding: 5px;
+  margin-left: 10px;
+  z-index: 70;
+  transition: transform 0.3s var(--spring);
+}
+.burger:active { transform: scale(0.9); }
+
+/* =============================================================
+   КНОПКИ
+   ============================================================= */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:14px 24px;border-radius:14px;font-weight:600;font-size:15px;
+  position:relative;white-space:nowrap;
+  transition: transform 0.4s var(--spring), box-shadow 0.4s var(--ease), background 0.3s;
+  will-change: transform;
+}
+.btn:active { transform: scale(0.96) translateY(0) !important; }
+
+.btn-primary{
+  background:var(--grad-btn);color:#fff;
+  box-shadow:0 8px 24px rgba(59,107,255,.35);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.btn-primary:hover{
+  transform: translateY(-3px);
+  box-shadow:0 14px 32px rgba(59,107,255,.5);
+}
+
+.btn-ghost{
+  background: var(--card-bg);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  color:var(--ink); border:1px solid var(--card-border);
+  box-shadow:var(--shadow-1);
+}
+.btn-ghost:hover{
+  transform: translateY(-3px);
+  box-shadow:var(--shadow-2);
+  background: var(--bg-2);
+}
+.btn-sm{padding:10px 18px;font-size:14px;border-radius:11px;}
+
+/* =============================================================
+   СЕКЦИИ
+   ============================================================= */
+section{padding:90px 0;position:relative}
+.eyebrow{
+  font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:14px;display:inline-flex;align-items:center;gap:9px;
+}
+.eyebrow::before{content:"";width:20px;height:2px;border-radius:2px;background:var(--accent);}
+h1{font-size:clamp(36px,5.4vw,62px);line-height:1.05;letter-spacing:-.035em;font-weight:800;margin-bottom:22px;}
+h2{font-size:clamp(28px,3.6vw,42px);line-height:1.15;letter-spacing:-.028em;font-weight:800;margin-bottom:14px;}
+.sec-head{max-width:640px;margin-bottom:52px}
+.sec-head p{color:var(--ink-2);font-size:16.5px;line-height:1.65}
+
+/* =============================================================
+   HERO
+   ============================================================= */
+.hero{padding:80px 0 100px;position:relative}
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;}
+.badge{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--card-bg);border:1px solid var(--card-border);border-radius:999px;
+  padding:7px 15px;font-size:13px;font-weight:500;color:var(--ink-2);
+  box-shadow:var(--shadow-1);margin-bottom:24px;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent-3); animation:pulse 2s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.4)} 70%{box-shadow:0 0 0 10px rgba(34,197,94,0)} 100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.lead{font-size:clamp(16px,1.6vw,18.5px);color:var(--ink-2);max-width:540px;margin-bottom:32px;line-height:1.65}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.hero-notes{list-style:none;display:flex;flex-wrap:wrap;gap:12px 24px;font-size:14px;color:var(--muted)}
+.hero-notes li{display:flex;align-items:center;gap:8px;}
+.hero-notes svg{width:17px;height:17px;flex:none;color:var(--accent-3)}
+
+/* hero card */
+.hero-card{
+  position:relative;border-radius:26px;padding:28px;
+  transition: transform 0.5s var(--spring), box-shadow 0.5s;
+}
+.hero-card:hover{
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 50px rgba(59,107,255,0.15);
+}
+.hero-card h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.hero-card h3 span{font-size:16px}
+.price-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line);}
+.price-row:last-of-type{border-bottom:0}
+.price-row .nm{font-size:14.5px;color:var(--ink-2);font-weight:500}
+.price-row .pr{font-size:15.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.price-row .pr.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero-card .foot{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;align-items:center;gap:9px;}
+.hero-card .foot b{color:var(--accent)}
+
+/* floating decorations */
+.float-dec{position:absolute;font-size:28px;opacity:.8;pointer-events:none;animation:floatDec 6s ease-in-out infinite;}
+@keyframes floatDec{0%,100%{transform:translateY(0) rotate(-4deg)} 50%{transform:translateY(-15px) rotate(4deg)}}
+.fd-1{top:10%;left:8%;animation-delay:-1s;font-size: 34px;}
+.fd-2{top:25%;right:10%;animation-delay:-2.5s;}
+.fd-3{bottom:20%;left:15%;animation-delay:-.8s;font-size: 32px;}
+.fd-4{bottom:12%;right:16%;animation-delay:-3.5s;}
+
+/* =============================================================
+   MARQUEE
+   ============================================================= */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--card-bg);padding:20px 0;overflow:hidden;position:relative;}
+.marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.marquee::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+.mq-track{display:flex;gap:44px;white-space:nowrap;animation:mq 30s linear infinite;width:max-content;}
+.mq-track:hover{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.mq-item{display:flex;align-items:center;gap:14px;font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--ink-2);}
+.mq-item .sep{color:var(--accent);font-size:16px;}
+
+/* =============================================================
+   STATS
+   ============================================================= */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat{
+  text-align:center;border-radius:var(--radius);padding:30px 22px;
+  transition: transform 0.4s var(--spring), box-shadow 0.4s;
+}
+.stat:hover{transform:translateY(-6px) scale(1.03);}
+.stat .num{font-size:clamp(26px,3.5vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--accent);margin-bottom:10px;}
+.stat .lbl{font-size:13.5px;color:var(--muted);font-weight:500}
+
+/* =============================================================
+   ТАБЫ
+   ============================================================= */
+.tabs{display:inline-flex;gap:6px;padding:6px;border-radius:16px;margin-bottom:36px;}
+.tab{
+  padding:11px 20px;border-radius:11px;font-size:14.5px;font-weight:600;color:var(--ink-2);
+  transition:all 0.4s var(--spring); display:inline-flex;align-items:center;gap:8px;
+}
+.tab:hover{color:var(--ink); background: rgba(0,0,0,0.03);}
+[data-theme="dark"] .tab:hover{background: rgba(255,255,255,0.05);}
+.tab.active{background:var(--ink); color:var(--bg); box-shadow:0 4px 12px rgba(10,16,32,.15);}
+.tab-panels{position:relative}
+.panel{display:none;animation:panelIn .5s var(--spring)}
+.panel.active{display:block}
+@keyframes panelIn{from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:none}}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+
+/* карточки услуг */
+.svc{
+  position:relative;border-radius:var(--radius);padding:28px 26px;
+  transition:transform .4s var(--spring), box-shadow .4s, border-color .4s;
+}
+.svc:hover{transform:translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.1);}
+[data-theme="dark"] .svc:hover{box-shadow: 0 20px 40px rgba(0,0,0,0.5);}
+.svc-ico{
+  width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+  font-size:24px;margin-bottom:18px;background:var(--accent-soft);
+  transition:transform .4s var(--spring);
+}
+.svc:hover .svc-ico{transform:scale(1.1) rotate(5deg);}
+.svc h3{font-size:18px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em;}
+.svc p{font-size:14.5px;color:var(--muted);line-height:1.6;}
+.svc .tag{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:5px 11px;border-radius:999px;}
+
+/* =============================================================
+   МОЙ ПОДХОД
+   ============================================================= */
+.about-sec {background: var(--bg-2); transition: background 0.5s;}
+.about-in {display: grid;grid-template-columns: 1fr 1fr;gap: 60px;align-items: center;}
+.about-text h2 {margin-bottom: 20px;}
+.about-text p {color: var(--ink-2); font-size: 16.5px; line-height: 1.7; margin-bottom: 20px;}
+.about-features {display: flex; flex-direction: column; gap: 16px; margin-top: 30px;}
+.about-feat {
+  display: flex; gap: 16px; align-items: flex-start; padding: 20px; border-radius: 16px;
+  transition: transform .4s var(--spring), box-shadow .4s;
+}
+.about-feat:hover {transform: translateX(6px) scale(1.01); box-shadow: var(--shadow-2);}
+.about-feat-icon {width: 44px; height: 44px; border-radius: 12px;background: var(--accent-soft); display: grid; place-items: center;font-size: 22px; flex: none;}
+.about-feat-text h4 {font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--ink);}
+.about-feat-text p {font-size: 14px; color: var(--muted); margin: 0; line-height: 1.5;}
+
+.about-visual {position: relative; display: flex; flex-direction: column; gap: 20px;}
+.visual-card {border-radius: 24px;padding: 30px; position: relative; overflow: hidden;transition: transform .4s var(--spring);}
+.visual-card:hover {transform: translateY(-5px) scale(1.02);}
+.visual-card::before {content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--grad);}
+.visual-card h3 {font-size: 20px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;}
+.visual-card p {font-size: 15px; color: var(--ink-2); line-height: 1.6; margin-bottom: 20px;}
+.visual-tags {display: flex; flex-wrap: wrap; gap: 8px;}
+.visual-tag {font-size: 13px; font-weight: 600; color: var(--accent);background: var(--accent-soft); padding: 6px 12px; border-radius: 999px;}
+.visual-mini {display: flex; gap: 16px;}
+.mini-card {flex: 1; border-radius: 18px; padding: 20px; text-align: center; transition: transform 0.4s var(--spring);}
+.mini-card:hover {transform: translateY(-4px) scale(1.03);}
+.mini-card .emoji {font-size: 30px; margin-bottom: 8px;}
+.mini-card .t {font-size: 14px; font-weight: 700; color: var(--ink);}
+.mini-card .d {font-size: 12px; color: var(--muted);}
+
+/* =============================================================
+   ЦЕНЫ
+   ============================================================= */
+.prices{background:var(--bg-2)}
+.price-tabs{margin-bottom:32px}
+.price-list{border-radius:24px;overflow:hidden;}
+.pl-row{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 28px;border-bottom:1px solid var(--line);transition:background .2s;}
+.pl-row:last-child{border-bottom:0}
+.pl-row:hover{background:var(--accent-soft);}
+.pl-l{display:flex;flex-direction:column;gap:4px}
+.pl-l .t{font-size:16px;font-weight:700;color:var(--ink)}
+.pl-l .d{font-size:13.5px;color:var(--muted)}
+.pl-r{font-size:18px;font-weight:800;color:var(--accent);white-space:nowrap}
+.pl-r.big{font-size:20px; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.pl-row.highlight{background:linear-gradient(90deg,rgba(59,107,255,.06),transparent)}
+.pl-row.highlight .t::after{content:"TOP";margin-left:10px;font-size:10.5px;font-weight:800;color:#fff;background:var(--accent-3);padding:3px 8px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle;}
+.pl-note{margin-top:20px;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px;}
+.pl-note svg{width:18px;height:18px;flex:none;color:var(--accent)}
+
+/* =============================================================
+   ШАГИ
+   ============================================================= */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:s}
+.step{position:relative;border-radius:var(--radius);padding:28px 22px;transition:transform .4s var(--spring), box-shadow .4s;}
+.step:hover{transform:translateY(-6px);}
+.step::before{counter-increment:s;content:counter(s);position:absolute;top:18px;right:22px;font-size:52px;font-weight:800;line-height:1;letter-spacing:-.05em;color:var(--accent-soft);}
+.step h3{font-size:16.5px;font-weight:700;margin-bottom:8px;position:relative;z-index:1}
+.step p{font-size:14px;color:var(--muted);line-height:1.6;position:relative;z-index:1}
+
+/* =============================================================
+   ПОЧЕМУ Я
+   ============================================================= */
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.why{display:flex;gap:18px;align-items:flex-start;border-radius:var(--radius);padding:26px;transition:transform .4s var(--spring), box-shadow .4s;}
+.why:hover{transform:translateY(-5px) scale(1.01);}
+.why-ico{width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);}
+.why-ico svg{width:20px;height:20px}
+.why h3{font-size:16.5px;font-weight:700;margin-bottom:6px}
+.why p{font-size:14.5px;color:var(--muted);line-height:1.6}
+
+/* =============================================================
+   FAQ (Аккордеон)
+   ============================================================= */
+.faq{max-width:820px;margin:0 auto}
+.faq-item{border-radius:16px;margin-bottom:12px;overflow:hidden;transition:border-color .3s, box-shadow .3s;}
+.faq-item.open{box-shadow:var(--shadow-2);}
+.faq-q{width:100%;padding:20px 24px;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:16px;font-weight:600;color:var(--ink);}
+.faq-q:hover{color:var(--accent)}
+.faq-icon{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:16px;font-weight:700;transition:transform .4s var(--spring), background .2s, color .2s;}
+.faq-item.open .faq-icon{transform:rotate(135deg);background:var(--accent);color:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--spring);}
+.faq-a-inner{padding:0 24px 22px;font-size:14.5px;color:var(--muted);line-height:1.65;}
+
+/* =============================================================
+   КОНТАКТЫ
+   ============================================================= */
+.contact-cta{background:linear-gradient(160deg,#0b1220,#1a2340);border-radius:32px;padding:64px 40px;color:#eaf0ff;position:relative;overflow:hidden;text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);}
+.contact-cta::before{content:"";position:absolute;width:600px;height:600px;border-radius:50%;top:-300px;right:-100px;filter:blur(100px);opacity:.3;pointer-events:none;background:radial-gradient(circle,#3b6bff,transparent 70%);}
+.contact-cta::after{content:"";position:absolute;width:500px;height:500px;border-radius:50%;bottom:-300px;left:-100px;filter:blur(100px);opacity:.2;pointer-events:none;background:radial-gradient(circle,#8b3bff,transparent 70%);}
+.contact-cta > *{position:relative;z-index:1}
+.contact-cta h2{color:#fff;margin-bottom:14px}
+.contact-cta p{color:#a4b2cc;max-width:520px;margin:0 auto 32px;font-size:16.5px}
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:500px;margin:0 auto 28px;}
+.cc{display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:inherit;transition:transform .4s var(--spring), background .3s;}
+.cc:hover{transform:translateY(-5px) scale(1.03);background:rgba(255,255,255,.12);}
+.cc-ico{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);margin-bottom:4px;}
+.cc .nm{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#a4b2cc}
+.cc .val{font-size:14.5px;font-weight:700;color:#fff;word-break:break-word}
+.loc-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:11px 20px;border-radius:999px;font-size:14px;color:#a4b2cc;}
+
+/* =============================================================
+   ПОДВАЛ
+   ============================================================= */
+.ftr{border-top:1px solid var(--line);padding:38px 0;background:var(--card-bg); transition: background 0.5s;}
+.ftr-in{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted);}
+.ftr-in b{color:var(--ink);font-weight:700}
+.ftr-links{display:flex;gap:18px}
+.ftr-links a{transition:color .2s}
+.ftr-links a:hover{color:var(--accent)}
+
+/* =============================================================
+   КНОПКА НАВЕРХ
+   ============================================================= */
+#toTop{
+  position:fixed;bottom:100px;right:26px;z-index:100;
+  width:50px;height:50px;border-radius:14px;display:grid;place-items:center;
+  font-size:20px; color: var(--ink);
+  opacity:0;visibility:hidden;transform:translateY(20px) scale(0.8);
+  transition:all .4s var(--spring);
+}
+#toTop.show{opacity:1;visibility:visible;transform:none}
+#toTop:hover{background:var(--ink);color:var(--bg); transform: scale(1.1);}
+
+/* =============================================================
+   МОБИЛЬНАЯ ПАНЕЛЬ
+   ============================================================= */
+.mobile-bar {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+  background: var(--card-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line); padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom)); gap: 10px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.05);
+}
+.mobile-bar .btn { flex: 1; padding: 14px; font-size: 15px; border-radius: 12px; }
+
+@media (max-width: 900px) {
+  .mobile-bar { display: flex; }
+  #toTop { bottom: 90px; right: 16px; width: 44px; height: 44px; }
+  
+  .burger { display: block; }
+  .nav {
+    display: none; position: absolute; top: 75px; left: 0; right: 0;
+    background: var(--card-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    flex-direction: column; padding: 15px 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.1); border-bottom: 1px solid var(--line);
+    margin-left: 0; gap: 5px; z-index: 60;
+  }
+  .nav.open { display: flex; animation: panelIn 0.3s var(--spring); }
+  .nav a { padding: 14px; font-size: 16px; border-bottom: 1px solid var(--line); border-radius: 0; }
+  
+  /* СКРЫВАЕМ ПК-КНОПКИ НА ТЕЛЕФОНЕ */
+  .controls { display: none; }
+  
+  /* ПОКАЗЫВАЕМ МОБИЛЬНЫЕ КНОПКИ ВНУТРИ МЕНЮ */
+  .mobile-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--line);
+    width: 100%;
+  }
+}
+
+/* =============================================================
+   АНИМАЦИЯ ПОЯВЛЕНИЯ (SCROLL)
+   ============================================================= */
+.reveal{opacity:0;transform:translateY(30px) scale(0.98);transition:opacity .8s var(--ease),transform .8s var(--spring);}
+.reveal.in{opacity:1;transform:none;}
+
+@media (max-width: 980px){
+  .hero-in{grid-template-columns:1fr;gap:46px}
+  .hero-card{max-width:480px}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .about-in{grid-template-columns:1fr;gap:40px}
+}
+@media (max-width: 760px){
+  .hdr .btn-primary { display: none; }
+  section{padding:66px 0}
+  .hero{padding:52px 0 70px}
+  .grid-3,.why-grid,.contact-grid{grid-template-columns:1fr}
+  .steps,.stats{grid-template-columns:1fr}
+  .pl-row{padding:18px 20px;flex-direction:column;align-items:flex-start;gap:6px}
+  .contact-cta{padding:48px 22px;border-radius:24px}
+  .cta{flex-direction:column;align-items:stretch}
+  .cta .btn{width:100%}
+  .ftr-in{flex-direction:column;text-align:center}
+  .tabs{width:100%;flex-wrap:wrap}
+  .tab{flex:1;justify-content:center;font-size:13.5px;padding:10px 12px}
+  .about-feat:hover { transform: none; }
+  .visual-mini { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="pre-in">
+    <div class="pre-logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 5 L85 20 V50 C85 75 50 95 50 95 C50 95 15 75 15 50 V20 Z" fill="#3b6bff"/>
+        <path d="M50 15 L75 26 V50 C75 68 50 84 50 84 C50 84 25 68 25 50 V26 Z" fill="#fff"/>
+        <rect x="30" y="30" width="40" height="30" rx="2" fill="#fff" stroke="#ffd700" stroke-width="4"/>
+        <path d="M25 62 H75 L80 72 H20 Z" fill="#ffd700"/>
+        <path d="M36 45 L44 53 L56 38" stroke="#3b6bff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M64 40 A5 5 0 0 0 57 45 L47 55 A3 3 0 1 1 42 50 L52 40 A5 5 0 0 0 57 33 L62 38 L64 40 Z" fill="#3b6bff"/>
+      </svg>
+    </div>
+    <div class="pre-bar"></div>
+  </div>
+</div>
+
+<div class="bg-layer">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="grid-bg"></div>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a class="logo" href="#top">
+      <span class="logo-mark">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5 L85 20 V50 C85 75 50 95 50 95 C50 95 15 75 15 50 V20 Z" fill="#3b6bff"/>
+          <path d="M50 15 L75 26 V50 C75 68 50 84 50 84 C50 84 25 68 25 50 V26 Z" fill="#fff"/>
+          <rect x="30" y="30" width="40" height="30" rx="2" fill="#fff" stroke="#ffd700" stroke-width="4"/>
+          <path d="M25 62 H75 L80 72 H20 Z" fill="#ffd700"/>
+          <path d="M36 45 L44 53 L56 38" stroke="#3b6bff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M64 40 A5 5 0 0 0 57 45 L47 55 A3 3 0 1 1 42 50 L52 40 A5 5 0 0 0 57 33 L62 38 L64 40 Z" fill="#3b6bff"/>
+        </svg>
+      </span>
+      <span>Мастер<span style="color:var(--accent)">.</span>Днепр</span>
+    </a>
+    
+    <!-- Панель для ПК -->
+    <div class="controls">
+      <div class="lang-switch">
+        <button data-lang="ru" class="active">РУС</button>
+        <button data-lang="uk">УКР</button>
+        <button data-lang="en">ENG</button>
+      </div>
+      <button class="icon-btn" id="themeToggle" title="Сменить тему">🌙</button>
+    </div>
+
+    <button class="burger" id="burger" aria-label="Меню">☰</button>
+    
+    <nav class="nav" id="nav">
+      <a href="#services" data-i18n="nav_services">Услуги</a>
+      <a href="#about" data-i18n="nav_about">Мой подход</a>
+      <a href="#prices" data-i18n="nav_prices">Цены</a>
+      <a href="#faq" data-i18n="nav_faq">FAQ</a>
+      <a href="#contact" data-i18n="nav_contacts">Контакты</a>
+      
+      <!-- Панель для телефонов (внутри меню) -->
+      <div class="mobile-controls">
+        <div class="lang-switch">
+          <button data-lang="ru" class="active">РУС</button>
+          <button data-lang="uk">УКР</button>
+          <button data-lang="en">ENG</button>
+        </div>
+        <button class="icon-btn" id="themeToggleMobile" title="Сменить тему">🌙</button>
+      </div>
+    </nav>
+    
+    <a class="btn btn-primary btn-sm" href="https://t.me/mackickicen" target="_blank" rel="noopener" data-i18n="btn_write">Написать</a>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="float-dec fd-1">✨</div>
+  <div class="float-dec fd-2">⚡</div>
+  <div class="float-dec fd-3">💻</div>
+  <div class="float-dec fd-4">🚀</div>
+
+  <div class="wrap hero-in">
+    <div class="hero-txt">
+      <div class="badge"><span class="dot"></span> <span data-i18n="hero_badge">Только софт · Северный</span></div>
+      <h1><span data-i18n="hero_title_1">Компьютер или ноутбук</span> <span class="grad-text" data-i18n="hero_title_2">тормозит?</span><br><span data-i18n="hero_title_3">Я всё настрою.</span></h1>
+      <p class="lead" data-i18n="hero_lead">
+        Установлю Windows, драйвера и нужные программы, активирую лицензию,
+        почищу от вирусов и мусора. Работаю только с системой — без разборки железа и замены термопасты.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://t.me/mackickicen" target="_blank" rel="noopener" data-i18n="btn_tg">✈️ Написать в Telegram</a>
+        <a class="btn btn-ghost" href="tel:+3800685430023" data-i18n="btn_call">📞 Позвонить</a>
+      </div>
+      <ul class="hero-notes">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <span data-i18n="note_1">Диагностика софта бесплатно</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <span data-i18n="note_2">Не смог — денег не беру</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <span data-i18n="note_3">Гарантия на настройку</span>
+        </li>
+      </ul>
+    </div>
+
+    <aside class="hero-card glass">
+      <h3><span>🔥</span> <span data-i18n="hero_pop">Популярное</span></h3>
+      <div class="price-row"><span class="nm" data-i18n="srv_win">Установка Windows 10 / 11</span><span class="pr grad">от 150 ₴</span></div>
+      <div class="price-row"><span class="nm" data-i18n="srv_drv">Драйвера «под ключ»</span><span class="pr">от 100 ₴</span></div>
+      <div class="price-row"><span class="nm" data-i18n="srv_prg">Набор программ</span><span class="pr">от 100 ₴</span></div>
+      <div class="price-row"><span class="nm" data-i18n="srv_vir">Чистка от вирусов</span><span class="pr">от 100 ₴</span></div>
+      <div class="foot"><span data-i18n="hero_time">⚡ Обычно всё занимает <b>1–2 часа</b></span></div>
+    </aside>
+  </div>
+</section>
+
+<div class="marquee">
+  <div class="mq-track">
+    <div class="mq-item" data-i18n="srv_win">Windows 10 / 11</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_drv">Драйвера</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_prg">Программы</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_lic">Лицензия</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_vir">Чистка от вирусов</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_boost">Ускорение системы</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_win">Windows 10 / 11</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_drv">Драйвера</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_prg">Программы</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_lic">Лицензия</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_vir">Чистка от вирусов</div><span class="sep">◆</span>
+    <div class="mq-item" data-i18n="srv_boost">Ускорение системы</div><span class="sep">◆</span>
+  </div>
+</div>
+
+<section style="padding-top:70px;padding-bottom:70px">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat glass reveal"><div class="num">1–2 ч</div><div class="lbl" data-i18n="stat_1">Средняя работа</div></div>
+      <div class="stat glass reveal"><div class="num">0 ₴</div><div class="lbl" data-i18n="stat_2">Диагностика софта</div></div>
+      <div class="stat glass reveal"><div class="num">100%</div><div class="lbl" data-i18n="stat_3">Гарантия на настройку</div></div>
+      <div class="stat glass reveal"><div class="num">Soft</div><div class="lbl" data-i18n="stat_4">Без разборки железа</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="services" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-i18n="nav_services">Услуги (Только софт)</div>
+      <h2 data-i18n="srv_title">Что я делаю</h2>
+      <p data-i18n="srv_desc">Всё, что нужно обычному человеку, чтобы компьютер работал быстро и без сюрпризов. Железо не разбираю, пломбы не срываю.</p>
+    </div>
+
+    <div class="tabs glass reveal" role="tablist">
+      <button class="tab active" data-tab="install"><span data-i18n="tab_1">🪟 Установка</span></button>
+      <button class="tab" data-tab="clean"><span data-i18n="tab_2">🧹 Чистка</span></button>
+      <button class="tab" data-tab="boost"><span data-i18n="tab_3">🚀 Оптимизация</span></button>
+    </div>
+
+    <div class="tab-panels">
+      <div class="panel active" data-panel="install">
+        <div class="grid-3">
+          <div class="svc glass reveal">
+            <div class="svc-ico">🪟</div>
+            <h3 data-i18n="card_win_t">Установка Windows</h3>
+            <p data-i18n="card_win_d">Windows 10 и 11 — любые сборки. Чистая установка с сохранением файлов по возможности.</p>
+            <span class="tag">от 150 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">⚙️</div>
+            <h3 data-i18n="card_drv_t">Драйвера</h3>
+            <p data-i18n="card_drv_d">Видео, звук, Wi-Fi, тачпад, принтер — поставлю все нужные драйвера, чтобы всё работало.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">📦</div>
+            <h3 data-i18n="card_prg_t">Программы</h3>
+            <p data-i18n="card_prg_d">Браузер, офис, архивы, плееры, антивирус — соберу полный набор под твои задачи.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">🔑</div>
+            <h3 data-i18n="card_lic_t">Лицензия</h3>
+            <p data-i18n="card_lic_d">Официальная активация Windows и Office. Объясню, чем отличается лицензия от «таблетки».</p>
+            <span class="tag">от 150 ₴</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="clean">
+        <div class="grid-3">
+          <div class="svc glass reveal">
+            <div class="svc-ico">🦠</div>
+            <h3 data-i18n="card_vir_t">Удаление вирусов</h3>
+            <p data-i18n="card_vir_d">Уберу трояны, майнеры и рекламные баннеры. Проверю систему после чистки.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">🧽</div>
+            <h3 data-i18n="card_trash_t">Чистка от мусора</h3>
+            <p data-i18n="card_trash_d">Временные файлы, кэш браузеров, старые обновления — освобожу место на диске.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">🌐</div>
+            <h3 data-i18n="card_brow_t">Чистка браузера</h3>
+            <p data-i18n="card_brow_d">Уберу вирусные расширения, сменю домашнюю страницу, восстановлю нормальный поиск.</p>
+            <span class="tag">от 50 ₴</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="boost">
+        <div class="grid-3">
+          <div class="svc glass reveal">
+            <div class="svc-ico">⚡</div>
+            <h3 data-i18n="card_boost_t">Ускорение системы</h3>
+            <p data-i18n="card_boost_d">Почищу автозагрузку, отключу лишние службы, настрою систему под слабое железо.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">💾</div>
+            <h3 data-i18n="card_disk_t">Чистка диска</h3>
+            <p data-i18n="card_disk_d">Проверю диск, уберу лишние файлы, настрою нормальное место для системы.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+          <div class="svc glass reveal">
+            <div class="svc-ico">🎮</div>
+            <h3 data-i18n="card_game_t">Настройка под игры</h3>
+            <p data-i18n="card_game_d">Настрою параметры Windows и драйверов, чтобы игры шли плавнее на том же железе.</p>
+            <span class="tag">от 100 ₴</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about-sec" id="about">
+  <div class="wrap about-in">
+    <div class="about-text reveal">
+      <div class="eyebrow" data-i18n="about_badge">Обо мне</div>
+      <h2 data-i18n="about_title">Мой рабочий подход</h2>
+      <p data-i18n="about_p1">
+        У меня есть собственный ноутбук и рабочее место, которое я настроил сам — от системы до последнего драйвера. Я не просто «где-то читал», а каждый день практикуюсь на своём железе.
+      </p>
+      <p data-i18n="about_p2">
+        Я занимаюсь <b>только программным обеспечением</b>. Не разбираю ноутбуки, не меняю термопасту и не трогаю железо — для этого есть сервисные центры. Зато в софте я разбираюсь досконально.
+      </p>
+
+      <div class="about-features">
+        <div class="about-feat glass">
+          <div class="about-feat-icon">💻</div>
+          <div class="about-feat-text">
+            <h4 data-i18n="about_f1_t">Свой личный сетап</h4>
+            <p data-i18n="about_f1_d">Каждую настройку проверяю на своём ноутбуке, прежде чем предлагать клиентам.</p>
+          </div>
+        </div>
+        <div class="about-feat glass">
+          <div class="about-feat-icon">🛡️</div>
+          <div class="about-feat-text">
+            <h4 data-i18n="about_f2_t">Только софт, без риска</h4>
+            <p data-i18n="about_f2_d">Не лезу внутрь корпуса, не срываю пломбы. Только система, программы и настройка.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-visual reveal">
+      <div class="visual-card glass">
+        <h3>🖥️ <span data-i18n="about_setup">Мой сетап</span></h3>
+        <p data-i18n="about_setup_d">
+          Ноутбук, монитор, механическая клавиатура с подсветкой — всё настроено под комфортную и быструю работу. На этом железе я тестирую каждую систему.
+        </p>
+        <div class="visual-tags">
+          <span class="visual-tag">Windows 10 / 11</span>
+          <span class="visual-tag" data-i18n="srv_drv">Драйвера</span>
+          <span class="visual-tag" data-i18n="srv_boost">Оптимизация</span>
+        </div>
+      </div>
+
+      <div class="visual-mini">
+        <div class="mini-card glass">
+          <div class="emoji">⚡</div>
+          <div class="t" data-i18n="about_fast">Быстро</div>
+          <div class="d">1–2 ч</div>
+        </div>
+        <div class="mini-card glass">
+          <div class="emoji">💎</div>
+          <div class="t" data-i18n="about_honest">Честно</div>
+          <div class="d" data-i18n="about_no_cheat">Без накруток</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="prices" id="prices">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-i18n="nav_prices">Цены</div>
+      <h2 data-i18n="price_title">Дешевле, чем в сервисе</h2>
+      <p data-i18n="price_desc">Без аренды офиса и начальников — поэтому цены ниже, а работа та же. Только работа с софтом.</p>
+    </div>
+
+    <div class="tabs price-tabs glass reveal" role="tablist">
+      <button class="tab active" data-ptab="single" data-i18n="tab_single">📋 Разово</button>
+      <button class="tab" data-ptab="bundle" data-i18n="tab_bundle">💰 Комплект (скидка)</button>
+    </div>
+
+    <div class="tab-panels">
+      <div class="panel active" data-panel="single">
+        <div class="price-list glass reveal">
+          <div class="pl-row">
+            <div class="pl-l"><span class="t" data-i18n="srv_win">Установка Windows 10 / 11</span><span class="d" data-i18n="srv_win_d">Чистая установка + базовые настройки</span></div>
+            <div class="pl-r">от 150 ₴</div>
+          </div>
+          <div class="pl-row">
+            <div class="pl-l"><span class="t" data-i18n="srv_drv">Драйвера «под ключ»</span><span class="d" data-i18n="srv_drv_d">Все устройства</span></div>
+            <div class="pl-r">от 100 ₴</div>
+          </div>
+          <div class="pl-row">
+            <div class="pl-l"><span class="t" data-i18n="srv_prg">Набор программ</span><span class="d" data-i18n="srv_prg_d">Браузер, офис, антивирус</span></div>
+            <div class="pl-r">от 100 ₴</div>
+          </div>
+          <div class="pl-row">
+            <div class="pl-l"><span class="t" data-i18n="srv_vir">Чистка от вирусов</span><span class="d" data-i18n="srv_vir_d">Удаление рекламы и мусора</span></div>
+            <div class="pl-r">от 100 ₴</div>
+          </div>
+          <div class="pl-row">
+            <div class="pl-l"><span class="t" data-i18n="price_diag">Диагностика софта</span><span class="d" data-i18n="price_diag_d">Скажу, что с системой</span></div>
+            <div class="pl-r" style="color:var(--accent-3)" data-i18n="price_free">бесплатно</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="bundle">
+        <div class="price-list glass reveal">
+          <div class="pl-row highlight">
+            <div class="pl-l"><span class="t" data-i18n="bundle_all">Полный «под ключ»</span><span class="d" data-i18n="bundle_all_d">Windows + драйвера + программы</span></div>
+            <div class="pl-r big">300 ₴</div>
+          </div>
+          <div class="pl-row highlight">
+            <div class="pl-l"><span class="t" data-i18n="bundle_win">Windows + лицензия</span><span class="d" data-i18n="bundle_win_d">Установка + официальный ключ</span></div>
+            <div class="pl-r big">250 ₴</div>
+          </div>
+          <div class="pl-row highlight">
+            <div class="pl-l"><span class="t" data-i18n="bundle_boost">Ускорение + чистка</span><span class="d" data-i18n="bundle_boost_d">Удаление мусора + оптимизация</span></div>
+            <div class="pl-r big">180 ₴</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pl-note reveal" data-i18n="price_note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Точную цену называю после диагностики — без «сюрпризов» в конце.
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal" style="margin:0 auto 52px;text-align:center">
+      <div class="eyebrow" style="display:inline-flex">FAQ</div>
+      <h2 data-i18n="nav_faq">Частые вопросы</h2>
+    </div>
+
+    <div class="faq">
+      <div class="faq-item glass reveal">
+        <button class="faq-q">
+          <span data-i18n="faq_q1">А ты железо чинишь? Термопасту меняешь?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner" data-i18n="faq_a1">
+          Нет. Я занимаюсь только программным обеспечением: системы, драйвера, программы. Внутрь ноутбука не лезу, ничего не разбираю. Зато в софте я разбираюсь отлично!
+        </div></div>
+      </div>
+      <div class="faq-item glass reveal">
+        <button class="faq-q">
+          <span data-i18n="faq_q2">Windows — это лицензия или «таблетка»?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner" data-i18n="faq_a2">
+          Если хочешь — поставлю официальную лицензию с ключом. Если хочешь сэкономить — есть вариант без активации. Честно скажу оба варианта.
+        </div></div>
+      </div>
+      <div class="faq-item glass reveal">
+        <button class="faq-q">
+          <span data-i18n="faq_q3">А файлы сохранятся?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a"><div class="faq-a-inner" data-i18n="faq_a3">
+          В большинстве случаев — да, сохраню на отдельный раздел. Но лучше заранее скинуть важное на флешку.
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" style="padding-top:0; padding-bottom: 120px;">
+  <div class="wrap">
+    <div class="contact-cta reveal">
+      <h2 data-i18n="contact_title">Напиши — отвечу быстро</h2>
+      <p data-i18n="contact_desc">Опиши проблему своими словами. Не знаешь, что сломалось — не страшно, разберёмся вместе.</p>
+
+      <div class="contact-grid">
+        <a class="cc" href="https://t.me/mackickicen" target="_blank" rel="noopener">
+          <div class="cc-ico">✈️</div>
+          <div class="nm">Telegram</div>
+          <div class="val">@mackickicen</div>
+        </a>
+        <a class="cc" href="tel:+3800685430023">
+          <div class="cc-ico">📞</div>
+          <div class="nm" data-i18n="btn_call">Позвонить</div>
+          <div class="val">+380 68 543 00 23</div>
+        </a>
+      </div>
+
+      <div class="loc-badge" data-i18n="contact_loc">📍 Северный · левый берег Днепра</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <div>© <span id="yr">2026</span> <b>Мастер.Днепр</b></div>
+    <div class="ftr-links">
+      <a href="#services" data-i18n="nav_services">Услуги</a>
+      <a href="#about" data-i18n="nav_about">Мой подход</a>
+      <a href="#prices" data-i18n="nav_prices">Цены</a>
+      <a href="#contact" data-i18n="nav_contacts">Контакты</a>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-bar">
+  <a href="https://t.me/mackickicen" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="btn_write">Написать</a>
+  <a href="tel:+3800685430023" class="btn btn-ghost" data-i18n="btn_call">Позвонить</a>
+</div>
+
+<button id="toTop" class="glass" aria-label="Наверх">↑</button>
+
+<script>
+(() => {
+  'use strict';
+
+  function getSafeStorage(key) {
+    try { return localStorage.getItem(key); } catch(e) { return null; }
+  }
+  function setSafeStorage(key, val) {
+    try { localStorage.setItem(key, val); } catch(e) {}
+  }
+
+  setTimeout(() => {
+    const pre = document.getElementById('preloader');
+    if (pre) pre.classList.add('done');
+  }, 1500);
+
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+  const translations = {
+    ru: {
+      nav_services: "Услуги", nav_about: "Мой подход", nav_prices: "Цены", nav_faq: "FAQ", nav_contacts: "Контакты",
+      btn_write: "Написать", btn_call: "📞 Позвонить", btn_tg: "✈️ Написать в Telegram",
+      hero_badge: "Только софт · Северный",
+      hero_title_1: "Компьютер или ноутбук", hero_title_2: "тормозит?", hero_title_3: "Я всё настрою.",
+      hero_lead: "Установлю Windows, драйвера и нужные программы, активирую лицензию, почищу от вирусов и мусора. Работаю только с системой — без разборки железа и замены термопасты.",
+      hero_pop: "Популярное", hero_time: "⚡ Обычно всё занимает <b>1–2 часа</b>",
+      note_1: "Диагностика софта бесплатно", note_2: "Не смог — денег не беру", note_3: "Гарантия на настройку",
+      stat_1: "Средняя работа", stat_2: "Диагностика софта", stat_3: "Гарантия на настройку", stat_4: "Без разборки железа",
+      srv_title: "Что я делаю", srv_desc: "Всё, что нужно обычному человеку, чтобы компьютер работал быстро и без сюрпризов. Железо не разбираю, пломбы не срываю.",
+      tab_1: "🪟 Установка", tab_2: "🧹 Чистка", tab_3: "🚀 Оптимизация", tab_single: "📋 Разово", tab_bundle: "💰 Комплект (скидка)",
+      srv_win: "Установка Windows 10 / 11", srv_win_d: "Чистая установка + базовые настройки",
+      srv_drv: "Драйвера «под ключ»", srv_drv_d: "Все устройства: видео, звук, Wi-Fi, тачпад",
+      srv_prg: "Набор программ", srv_prg_d: "Браузер, офис, архивы, антивирус",
+      srv_lic: "Лицензия", srv_lic_d: "Официальная активация Windows / Office",
+      srv_vir: "Чистка от вирусов", srv_vir_d: "Удаление рекламы, ускорение системы",
+      srv_boost: "Ускорение системы",
+      card_win_t: "Установка Windows", card_win_d: "Windows 10 и 11 — любые сборки. Чистая установка с сохранением файлов.",
+      card_drv_t: "Драйвера", card_drv_d: "Видео, звук, Wi-Fi, тачпад, принтер — поставлю все нужные драйвера.",
+      card_prg_t: "Программы", card_prg_d: "Браузер, офис, архивы, плееры, антивирус — соберу полный набор.",
+      card_lic_t: "Лицензия", card_lic_d: "Официальная активация Windows и Office. Объясню разницу.",
+      card_vir_t: "Удаление вирусов", card_vir_d: "Уберу трояны, майнеры и рекламные баннеры. Проверю систему.",
+      card_trash_t: "Чистка от мусора", card_trash_d: "Временные файлы, кэш браузеров, старые обновления — освобожу место.",
+      card_brow_t: "Чистка браузера", card_brow_d: "Уберу вирусные расширения, восстановлю нормальный поиск.",
+      card_boost_t: "Ускорение", card_boost_d: "Почищу автозагрузку, отключу лишние службы для слабого ПК.",
+      card_disk_t: "Чистка диска", card_disk_d: "Проверю диск, уберу лишние файлы, настрою место.",
+      card_game_t: "Настройка под игры", card_game_d: "Настрою Windows и драйвера для плавного геймплея.",
+      about_badge: "Обо мне", about_title: "Мой рабочий подход",
+      about_p1: "У меня есть собственный ноутбук и рабочее место, которое я настроил сам. Я не просто «где-то читал», а каждый день практикуюсь на своём железе.",
+      about_p2: "Я занимаюсь <b>только программным обеспечением</b>. Не разбираю ноутбуки, не меняю термопасту. Зато в софте я разбираюсь досконально.",
+      about_f1_t: "Свой личный сетап", about_f1_d: "Каждую настройку проверяю на своём ноутбуке.",
+      about_f2_t: "Только софт, без риска", about_f2_d: "Не лезу внутрь корпуса, не срываю пломбы.",
+      about_setup: "Мой сетап", about_setup_d: "Ноутбук, монитор, механическая клавиатура с подсветкой — всё настроено под быструю работу.",
+      about_fast: "Быстро", about_honest: "Честно", about_no_cheat: "Без накруток",
+      price_title: "Дешевле, чем в сервисе", price_desc: "Без аренды офиса — поэтому цены ниже. Только работа с софтом.",
+      price_diag: "Диагностика софта", price_diag_d: "Скажу, что с системой и сколько будет стоить", price_free: "бесплатно",
+      bundle_all: "Полный «под ключ»", bundle_all_d: "Windows + все драйвера + набор программ + настройка",
+      bundle_win: "Windows + лицензия", bundle_win_d: "Установка + официальный ключ активации (ключ отдельно)",
+      bundle_boost: "Ускорение + чистка", bundle_boost_d: "Удаление мусора + оптимизация системы",
+      price_note: "Точную цену называю после диагностики — без «сюрпризов» в конце.",
+      faq_q1: "А ты железо чинишь? Термопасту меняешь?", faq_a1: "Нет. Я занимаюсь только программным обеспечением: системы, драйвера, программы. Внутрь ноутбука не лезу, ничего не разбираю. Зато в софте я разбираюсь отлично!",
+      faq_q2: "Windows — это лицензия или «таблетка»?", faq_a2: "Если хочешь — поставлю официальную лицензию с ключом. Если хочешь сэкономить — есть вариант без активации. Честно скажу оба варианта.",
+      faq_q3: "А файлы сохранятся?", faq_a3: "В большинстве случаев — да, сохраню на отдельный раздел. Но лучше заранее скинуть важное на флешку.",
+      contact_title: "Напиши — отвечу быстро", contact_desc: "Опиши проблему своими словами. Не знаешь, что сломалось — не страшно, разберёмся вместе.",
+      contact_loc: "📍 Северный · левый берег Днепра"
+    },
+    uk: {
+      nav_services: "Послуги", nav_about: "Мій підхід", nav_prices: "Ціни", nav_faq: "FAQ", nav_contacts: "Контакти",
+      btn_write: "Написати", btn_call: "📞 Подзвонити", btn_tg: "✈️ Написати в Telegram",
+      hero_badge: "Тільки софт · Північний",
+      hero_title_1: "Комп'ютер або ноутбук", hero_title_2: "гальмує?", hero_title_3: "Я все налаштую.",
+      hero_lead: "Встановлю Windows, драйвери та потрібні програми, активую ліцензію, почищу від вірусів та сміття. Працюю лише з системою — без розбирання заліза.",
+      hero_pop: "Популярне", hero_time: "⚡ Зазвичай все займає <b>1–2 години</b>",
+      note_1: "Діагностика софту безкоштовно", note_2: "Не зміг — грошей не беру", note_3: "Гарантія на налаштування",
+      stat_1: "Середня робота", stat_2: "Діагностика софту", stat_3: "Гарантія", stat_4: "Без розбирання",
+      srv_title: "Що я роблю", srv_desc: "Все, що потрібно звичайній людині, щоб комп'ютер працював швидко і без сюрпризів.",
+      tab_1: "🪟 Встановлення", tab_2: "🧹 Чистка", tab_3: "🚀 Оптимізація", tab_single: "📋 Разово", tab_bundle: "💰 Комплект (знижка)",
+      srv_win: "Встановлення Windows 10 / 11", srv_win_d: "Чисте встановлення + базові налаштування",
+      srv_drv: "Драйвери «під ключ»", srv_drv_d: "Всі пристрої: відео, звук, Wi-Fi, тачпад",
+      srv_prg: "Набір програм", srv_prg_d: "Браузер, офіс, архіви, антивірус",
+      srv_lic: "Ліцензія", srv_lic_d: "Офіційна активація Windows / Office",
+      srv_vir: "Чистка від вірусів", srv_vir_d: "Видалення реклами, прискорення системи",
+      srv_boost: "Прискорення системи",
+      card_win_t: "Встановлення Windows", card_win_d: "Windows 10 і 11 — будь-які збірки. Чисте встановлення зі збереженням файлів.",
+      card_drv_t: "Драйвери", card_drv_d: "Відео, звук, Wi-Fi, тачпад, принтер — встановлю всі потрібні драйвери.",
+      card_prg_t: "Програми", card_prg_d: "Браузер, офіс, архіви, плеєри, антивірус — зберу повний набір.",
+      card_lic_t: "Ліцензія", card_lic_d: "Офіційна активація Windows і Office. Поясню різницю.",
+      card_vir_t: "Видалення вірусів", card_vir_d: "Приберу трояни, майнери та рекламні банери. Перевірю систему.",
+      card_trash_t: "Чистка від сміття", card_trash_d: "Тимчасові файли, кеш браузерів, старі оновлення — звільню місце.",
+      card_brow_t: "Чистка браузера", card_brow_d: "Приберу вірусні розширення, відновлю нормальний пошук.",
+      card_boost_t: "Прискорення", card_boost_d: "Почищу автозавантаження, відключу зайві служби для слабкого ПК.",
+      card_disk_t: "Чистка диска", card_disk_d: "Перевірю диск, приберу зайві файли, налаштую місце.",
+      card_game_t: "Налаштування під ігри", card_game_d: "Налаштую Windows і драйвери для плавного геймплею.",
+      about_badge: "Про мене", about_title: "Мій робочий підхід",
+      about_p1: "У мене є власний ноутбук і робоче місце, яке я налаштував сам. Я не просто «десь читав», а щодня практикуюсь на своєму залізі.",
+      about_p2: "Я займаюся <b>лише програмним забезпеченням</b>. Не розбираю ноутбуки, не міняю термопасту. Зате в софті я розбираюся досконально.",
+      about_f1_t: "Свій особистий сетап", about_f1_d: "Кожне налаштування перевіряю на своєму ноутбуці.",
+      about_f2_t: "Тільки софт, без ризику", about_f2_d: "Не лізу всередину корпусу, не зриваю пломби.",
+      about_setup: "Мій сетап", about_setup_d: "Ноутбук, монітор, механічна клавіатура з підсвіткою — все налаштовано під швидку роботу.",
+      about_fast: "Швидко", about_honest: "Чесно", about_no_cheat: "Без накруток",
+      price_title: "Дешевше, ніж у сервісі", price_desc: "Без оренди офісу — тому ціни нижчі. Тільки робота з софтом.",
+      price_diag: "Діагностика софту", price_diag_d: "Скажу, що з системою і скільки буде коштувати", price_free: "безкоштовно",
+      bundle_all: "Повний «під ключ»", bundle_all_d: "Windows + всі драйвери + набір програм + налаштування",
+      bundle_win: "Windows + ліцензія", bundle_win_d: "Встановлення + офіційний ключ активації (ключ окремо)",
+      bundle_boost: "Прискорення + чистка", bundle_boost_d: "Видалення сміття + оптимізація системи",
+      price_note: "Точну ціну називаю після діагностики — без «сюрпризів» в кінці.",
+      faq_q1: "А ти залізо ремонтуєш? Термопасту міняєш?", faq_a1: "Ні. Я займаюся лише програмним забезпеченням: системи, драйвери, програми. Всередину ноутбука не лізу, нічого не розбираю. Зате в софті я розбираюся відмінно!",
+      faq_q2: "Windows — це ліцензія чи «таблетка»?", faq_a2: "Якщо хочеш — поставлю офіційну ліцензію з ключем. Якщо хочеш заощадити — є варіант без активації. Чесно скажу обидва варіанти.",
+      faq_q3: "А файли збережуться?", faq_a3: "У більшості випадків — так, збережу на окремий розділ. Але краще заздалегідь скинути важливе на флешку.",
+      contact_title: "Напиши — відповім швидко", contact_desc: "Опиши проблему своїми словами. Не знаєш, що зламалося — не страшно, розберемося разом.",
+      contact_loc: "📍 Північний · лівий берег Дніпра"
+    },
+    en: {
+      nav_services: "Services", nav_about: "My Approach", nav_prices: "Prices", nav_faq: "FAQ", nav_contacts: "Contacts",
+      btn_write: "Contact Me", btn_call: "📞 Call", btn_tg: "✈️ Message on Telegram",
+      hero_badge: "Software only · North Side",
+      hero_title_1: "Computer or laptop", hero_title_2: "running slow?", hero_title_3: "I'll fix it.",
+      hero_lead: "I install Windows, drivers, and necessary software, activate licenses, and clean viruses. I work strictly with software — no hardware disassembly.",
+      hero_pop: "Popular", hero_time: "⚡ Usually takes <b>1–2 hours</b>",
+      note_1: "Free software diagnostics", note_2: "No fix, no fee", note_3: "Setup warranty",
+      stat_1: "Avg. work time", stat_2: "Software diagnostics", stat_3: "Warranty", stat_4: "No hardware touch",
+      srv_title: "What I do", srv_desc: "Everything a regular user needs to keep their computer running fast and smooth.",
+      tab_1: "🪟 Installation", tab_2: "🧹 Cleaning", tab_3: "🚀 Optimization", tab_single: "📋 Single", tab_bundle: "💰 Bundle (Discount)",
+      srv_win: "Windows 10 / 11 Install", srv_win_d: "Clean install + basic setup",
+      srv_drv: "All Drivers", srv_drv_d: "Video, audio, Wi-Fi, touchpad, etc.",
+      srv_prg: "Software Pack", srv_prg_d: "Browser, Office, archives, antivirus",
+      srv_lic: "License", srv_lic_d: "Official Windows / Office activation",
+      srv_vir: "Virus Removal", srv_vir_d: "Adware removal, system speedup",
+      srv_boost: "System Speedup",
+      card_win_t: "Windows Install", card_win_d: "Windows 10 & 11 clean installation with file backup if possible.",
+      card_drv_t: "Drivers", card_drv_d: "I will install all necessary drivers for your hardware to work perfectly.",
+      card_prg_t: "Software", card_prg_d: "Browser, Office, archives, players, antivirus — a complete set for your needs.",
+      card_lic_t: "License", card_lic_d: "Official Windows and Office activation. I'll explain the difference.",
+      card_vir_t: "Virus Removal", card_vir_d: "I'll remove trojans, miners, and ad banners. System check included.",
+      card_trash_t: "Junk Cleanup", card_trash_d: "Temp files, browser cache, old updates — I'll free up space.",
+      card_brow_t: "Browser Cleanup", card_brow_d: "Remove malicious extensions, restore normal search.",
+      card_boost_t: "Speedup", card_boost_d: "Clean startup, disable unnecessary services for weak PCs.",
+      card_disk_t: "Disk Cleanup", card_disk_d: "Check disk, remove extra files, configure storage space.",
+      card_game_t: "Game Setup", card_game_d: "Configure Windows and drivers for smoother gameplay.",
+      about_badge: "About Me", about_title: "My Approach",
+      about_p1: "I have my own laptop and workspace, configured completely by myself. I practice on my hardware every day.",
+      about_p2: "I work <b>strictly with software</b>. I don't disassemble laptops or change thermal paste. But I know software inside out.",
+      about_f1_t: "Personal Setup", about_f1_d: "I test every setting on my own laptop first.",
+      about_f2_t: "Software Only", about_f2_d: "No hardware disassembly, no warranty voiding. Just software.",
+      about_setup: "My Setup", about_setup_d: "Laptop, monitor, mechanical keyboard — everything tuned for fast work.",
+      about_fast: "Fast", about_honest: "Honest", about_no_cheat: "No tricks",
+      price_title: "Cheaper than a service center", price_desc: "No office rent — that's why prices are lower. Software only.",
+      price_diag: "Software Diagnostics", price_diag_d: "I'll tell you what's wrong and the cost", price_free: "free",
+      bundle_all: "Full 'Turnkey'", bundle_all_d: "Windows + all drivers + software pack + setup",
+      bundle_win: "Windows + License", bundle_win_d: "Installation + official activation key (key sold separately)",
+      bundle_boost: "Speedup + Cleanup", bundle_boost_d: "Junk removal + system optimization",
+      price_note: "I give the exact price after diagnostics — no surprises at the end.",
+      faq_q1: "Do you repair hardware? Change thermal paste?", faq_a1: "No. I only work with software: OS, drivers, programs. I don't open laptops or touch hardware. But my software skills are top-notch!",
+      faq_q2: "Is Windows licensed or cracked?", faq_a2: "I can install an official license with a key, or a free version. I'll honestly explain both options, and you decide.",
+      faq_q3: "Will my files be saved?", faq_a3: "In most cases, yes, I'll save them. But it's always safer to back up important files to a flash drive beforehand.",
+      contact_title: "Message me — I reply fast", contact_desc: "Describe the issue in your own words. Don't know what's broken? We'll figure it out.",
+      contact_loc: "📍 North Side · left bank of Dnipro"
+    }
+  };
+
+  let currentLang = getSafeStorage('lang') || 'ru';
+  
+  function setLanguage(lang) {
+    currentLang = lang;
+    setSafeStorage('lang', lang);
+    
+    $$('.lang-switch button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+    
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (translations[lang] && translations[lang][key]) {
+        el.innerHTML = translations[lang][key];
+      }
+    });
+  }
+
+  $$('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+  });
+
+  setLanguage(currentLang);
+
+  const themeToggle = $('#themeToggle');
+  const themeToggleMobile = $('#themeToggleMobile');
+  const currentTheme = getSafeStorage('theme') || 'light';
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    setSafeStorage('theme', theme);
+    const icons = ['🌙', '☀️'];
+    const icon = theme === 'dark' ? icons[1] : icons[0];
+    if(themeToggle) themeToggle.innerHTML = icon;
+    if(themeToggleMobile) themeToggleMobile.innerHTML = icon;
+  }
+
+  if(themeToggle) themeToggle.addEventListener('click', () => {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+  if(themeToggleMobile) themeToggleMobile.addEventListener('click', () => {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  setTheme(currentTheme);
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const pre = $('#preloader');
+      if(pre) pre.classList.add('done');
+    }, 400);
+  });
+
+  const yrEl = $('#yr');
+  if (yrEl) yrEl.textContent = new Date().getFullYear();
+
+  const burger = $('#burger');
+  const nav = $('#nav');
+  if (burger && nav) {
+    burger.addEventListener('click', () => {
+      nav.classList.toggle('open');
+      burger.innerHTML = nav.classList.contains('open') ? '✕' : '☰';
+    });
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('open');
+        burger.innerHTML = '☰';
+      });
+    });
+  }
+
+  const hdr = $('#hdr');
+  const toTop = $('#toTop');
+
+  function onScroll(){
+    const y = window.scrollY;
+    if(hdr) hdr.classList.toggle('scrolled', y > 8);
+    if(toTop) toTop.classList.toggle('show', y > 600);
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  if (toTop) {
+    toTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  const revealEls = $$('.reveal');
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting){
+          e.target.style.transitionDelay = ((i % 3) * 50) + 'ms';
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+
+  $$('.tabs .tab[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.tab;
+      $$('.tabs .tab[data-tab]').forEach(b => b.classList.toggle('active', b === btn));
+      $$('.tab-panels .panel').forEach(p => p.classList.toggle('active', p.dataset.panel === id));
+    });
+  });
+
+  $$('.tabs .tab[data-ptab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.ptab;
+      $$('.tabs .tab[data-ptab]').forEach(b => b.classList.toggle('active', b === btn));
+      $$('.tab-panels .panel').forEach(p => p.classList.toggle('active', p.dataset.panel === id));
+    });
+  });
+
+  $$('.faq-item').forEach(item => {
+    const q = $('.faq-q', item);
+    const a = $('.faq-a', item);
+    if (q && a) {
+      q.addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        $$('.faq-item').forEach(it => {
+          it.classList.remove('open');
+          const ans = $('.faq-a', it);
+          if(ans) ans.style.maxHeight = null;
+        });
+        if (!isOpen){
+          item.classList.add('open');
+          a.style.maxHeight = a.scrollHeight + 'px';
+        }
+      });
+    }
+  });
+
+  const fine = window.matchMedia('(pointer:fine)').matches;
+  if (fine){
+    const blobs = $$('.blob');
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    window.addEventListener('mousemove', e => {
+      tx = (e.clientX / window.innerWidth - 0.5) * 2;
+      ty = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+    function blobLoop(){
+      cx += (tx - cx) * 0.05;
+      cy += (ty - cy) * 0.05;
+      blobs.forEach((b, i) => {
+        const s = (i + 1) * 0.015;
+        b.style.transform = `translate(${cx * s * 400}px, ${cy * s * 400}px)`;
+      });
+      requestAnimationFrame(blobLoop);
+    }
+    requestAnimationFrame(blobLoop);
+  }
+
+})();
+</script>
+</body>
+</html>
