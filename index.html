@@ -1347,7 +1347,7 @@ h2{font-size:clamp(28px,3.6vw,42px);line-height:1.15;letter-spacing:-.028em;font
     }
   });
 
-  // --- УМНАЯ ДИАГНОСТИКА (РЕАЛЬНЫЕ ДАННЫЕ) ---
+  // --- УМНАЯ ДИАГНОСТИКА (С ПРОВЕРКОЙ НА ТЕЛЕФОН) ---
   const diagBtn = $('#diagBtn');
   const diagConsole = $('#diagConsole');
   let diagRunning = false;
@@ -1359,93 +1359,6 @@ h2{font-size:clamp(28px,3.6vw,42px);line-height:1.15;letter-spacing:-.028em;font
       diagConsole.innerHTML = '';
       diagBtn.disabled = true;
       diagBtn.style.opacity = '0.5';
-
-      // Сбор реальных данных
-      const userAgent = navigator.userAgent;
-      let os = "Unknown OS";
-      if (userAgent.indexOf("Win") != -1) os = "Windows";
-      if (userAgent.indexOf("Mac") != -1) os = "macOS";
-      if (userAgent.indexOf("Linux") != -1) os = "Linux";
-      if (userAgent.indexOf("Android") != -1) os = "Android";
-      if (userAgent.indexOf("like Mac") != -1) os = "iOS";
-
-      let browser = "Browser";
-      if (userAgent.indexOf("Chrome") != -1) browser = "Chrome";
-      if (userAgent.indexOf("Firefox") != -1) browser = "Firefox";
-      if (userAgent.indexOf("Safari") != -1 && browser !== "Chrome") browser = "Safari";
-      if (userAgent.indexOf("Edge") != -1) browser = "Edge";
-
-      const cores = navigator.hardwareConcurrency || "Неизвестно";
-      const ram = navigator.deviceMemory ? navigator.deviceMemory + " ГБ" : "Неизвестно";
-      
-      const net = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      let netSpeed = net ? net.effectiveType.toUpperCase() : "Wi-Fi";
-
-      // Тест скорости JS (простой бенчмарк)
-      const start = performance.now();
-      let x = 0;
-      for(let i = 0; i < 5000000; i++) { x += i; }
-      const end = performance.now();
-      const speed = end - start; // чем меньше, тем быстрее
-
-      const msgs = {
-        ru: {
-          start: "> Инициализация сканера...",
-          os: "> ОС: ",
-          br: "> Браузер: ",
-          hw: "> Ядер ЦП: ",
-          ram: "> ОЗУ: ",
-          net: "> Сеть: ",
-          test: "> Тест скорости: ",
-          fast: "Отлично",
-          slow: "Медленно",
-          res_title: "> АНАЛИЗ ЗАВЕРШЕН. ВЕРДИКТ:",
-          res_weak: "⚠️ Обнаружен слабый процессор/мало ОЗУ. Система тормозит из-за нехватки ресурсов.",
-          res_fast: "✅ Железо мощное, но браузер забит. Возможно, много фоновых программ или вирусов.",
-          res_old: "⚠️ Ваша ОС устарела. Рекомендуется установка свежей Windows 10/11.",
-          res_net: "🌐 Слабый интернет. Страницы будут грузиться медленно.",
-          final: "> РЕКОМЕНДАЦИЯ: Требуется очистка софта или переустановка Windows.",
-          btn_contact: "Написать мастеру"
-        },
-        uk: {
-          start: "> Ініціалізація сканера...",
-          os: "> ОС: ",
-          br: "> Браузер: ",
-          hw: "> Ядер ЦП: ",
-          ram: "> ОЗП: ",
-          net: "> Мережа: ",
-          test: "> Тест швидкості: ",
-          fast: "Відмінно",
-          slow: "Повільно",
-          res_title: "> АНАЛІЗ ЗАВЕРШЕНО. ВЕРДИКТ:",
-          res_weak: "⚠️ Виявлено слабкий процесор/мало ОЗП. Система гальмує через нестачу ресурсів.",
-          res_fast: "✅ Залізо потужне, але браузер забитий. Можливо, багато фонових програм або вірусів.",
-          res_old: "⚠️ Ваша ОС застаріла. Рекомендується встановлення свіжої Windows 10/11.",
-          res_net: "🌐 Слабкий інтернет. Сторінки будуть завантажуватися повільно.",
-          final: "> РЕКОМЕНДАЦІЯ: Потрібне очищення софту або перевстановлення Windows.",
-          btn_contact: "Написати майстру"
-        },
-        en: {
-          start: "> Initializing scanner...",
-          os: "> OS: ",
-          br: "> Browser: ",
-          hw: "> CPU Cores: ",
-          ram: "> RAM: ",
-          net: "> Network: ",
-          test: "> Speed test: ",
-          fast: "Excellent",
-          slow: "Slow",
-          res_title: "> ANALYSIS COMPLETE. VERDICT:",
-          res_weak: "⚠️ Weak CPU/Low RAM detected. System is slow due to lack of resources.",
-          res_fast: "✅ Powerful hardware, but browser is clogged. Possibly too many background apps or viruses.",
-          res_old: "⚠️ Your OS is outdated. Fresh Windows 10/11 installation is recommended.",
-          res_net: "🌐 Weak internet. Pages will load slowly.",
-          final: "> RECOMMENDATION: Software cleanup or Windows reinstallation required.",
-          btn_contact: "Contact Master"
-        }
-      };
-
-      const t = msgs[currentLang] || msgs.ru;
 
       const printLine = (text, className = 'info', delay = 600) => {
         return new Promise(resolve => {
@@ -1460,43 +1373,143 @@ h2{font-size:clamp(28px,3.6vw,42px);line-height:1.15;letter-spacing:-.028em;font
         });
       };
 
+      // ПРОВЕРКА НА МОБИЛЬНОЕ УСТРОЙСТВО
+      if (isMobile) {
+        const mobileMsgs = {
+          ru: {
+            start: "> Инициализация сканера...",
+            err1: "> ОШИБКА: Мобильная ОС не имеет доступа к реестру Windows.",
+            err2: "> Для глубокого анализа драйверов и железа требуется ПК.",
+            act: "Написать мастеру"
+          },
+          uk: {
+            start: "> Ініціалізація сканера...",
+            err1: "> ПОМИЛКА: Мобільна ОС не має доступу до реєстру Windows.",
+            err2: "> Для глибокого аналізу драйверів і заліза потрібен ПК.",
+            act: "Написати майстру"
+          },
+          en: {
+            start: "> Initializing scanner...",
+            err1: "> ERROR: Mobile OS cannot access Windows registry.",
+            err2: "> Deep hardware and driver analysis requires a PC.",
+            act: "Contact Master"
+          }
+        };
+        const m = mobileMsgs[currentLang] || mobileMsgs.ru;
+
+        await printLine(m.start, 'info', 400);
+        await printLine(m.err1, 'error', 800);
+        await printLine(m.err2, 'error', 800);
+
+        setTimeout(() => {
+          const btnWrap = document.createElement('div');
+          btnWrap.style.marginTop = '10px';
+          btnWrap.innerHTML = `<a href="https://t.me/mackickicen" target="_blank" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">✈️ ${m.act}</a>`;
+          diagConsole.appendChild(btnWrap);
+          diagConsole.scrollTop = diagConsole.scrollHeight;
+
+          diagBtn.disabled = false;
+          diagBtn.style.opacity = '1';
+          diagRunning = false;
+        }, 1500);
+        return; // Выходим, чтобы не запускать тест на телефоне
+      }
+
+      // Если это ПК, запускаем реальный тест
+      const userAgent = navigator.userAgent;
+      let os = "Unknown OS";
+      if (userAgent.indexOf("Win") != -1) os = "Windows";
+      if (userAgent.indexOf("Mac") != -1) os = "macOS";
+      if (userAgent.indexOf("Linux") != -1) os = "Linux";
+
+      let browser = "Browser";
+      if (userAgent.indexOf("Chrome") != -1) browser = "Chrome";
+      if (userAgent.indexOf("Firefox") != -1) browser = "Firefox";
+      if (userAgent.indexOf("Safari") != -1 && browser !== "Chrome") browser = "Safari";
+      if (userAgent.indexOf("Edge") != -1) browser = "Edge";
+
+      const cores = navigator.hardwareConcurrency || "?";
+      const ram = navigator.deviceMemory ? navigator.deviceMemory + " ГБ" : "?";
+      
+      const net = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      let netSpeed = net ? net.effectiveType.toUpperCase() : "Wi-Fi";
+
+      const start = performance.now();
+      let x = 0;
+      for(let i = 0; i < 5000000; i++) { x += i; }
+      const speed = performance.now() - start;
+
+      const msgs = {
+        ru: {
+          start: "> Инициализация сканера...",
+          os: "> ОС: ", br: "> Браузер: ", hw: "> Ядер ЦП: ", ram: "> ОЗУ: ", net: "> Сеть: ",
+          test: "> Тест скорости: ", fast: "Отлично", slow: "Медленно",
+          res_title: "> АНАЛИЗ ЗАВЕРШЕН. ВЕРДИКТ:",
+          res_weak: "⚠️ Обнаружен слабый процессор/мало ОЗУ. Система тормозит из-за нехватки ресурсов.",
+          res_fast: "✅ Железо мощное, но браузер забит. Возможно, много фоновых программ или вирусов.",
+          res_old: "⚠️ Ваша ОС устарела. Рекомендуется установка свежей Windows 10/11.",
+          res_net: "🌐 Слабый интернет. Страницы будут грузиться медленно.",
+          final: "> РЕКОМЕНДАЦИЯ: Требуется очистка софта или переустановка Windows.",
+          btn_contact: "Написать мастеру"
+        },
+        uk: {
+          start: "> Ініціалізація сканера...",
+          os: "> ОС: ", br: "> Браузер: ", hw: "> Ядер ЦП: ", ram: "> ОЗП: ", net: "> Мережа: ",
+          test: "> Тест швидкості: ", fast: "Відмінно", slow: "Повільно",
+          res_title: "> АНАЛІЗ ЗАВЕРШЕНО. ВЕРДИКТ:",
+          res_weak: "⚠️ Виявлено слабкий процесор/мало ОЗП. Система гальмує через нестачу ресурсів.",
+          res_fast: "✅ Залізо потужне, але браузер забитий. Можливо, багато фонових програм або вірусів.",
+          res_old: "⚠️ Ваша ОС застаріла. Рекомендується встановлення свіжої Windows 10/11.",
+          res_net: "🌐 Слабкий інтернет. Сторінки будуть завантажуватися повільно.",
+          final: "> РЕКОМЕНДАЦІЯ: Потрібне очищення софту або перевстановлення Windows.",
+          btn_contact: "Написати майстру"
+        },
+        en: {
+          start: "> Initializing scanner...",
+          os: "> OS: ", br: "> Browser: ", hw: "> CPU Cores: ", ram: "> RAM: ", net: "> Network: ",
+          test: "> Speed test: ", fast: "Excellent", slow: "Slow",
+          res_title: "> ANALYSIS COMPLETE. VERDICT:",
+          res_weak: "⚠️ Weak CPU/Low RAM detected. System is slow due to lack of resources.",
+          res_fast: "✅ Powerful hardware, but browser is clogged. Possibly too many background apps or viruses.",
+          res_old: "⚠️ Your OS is outdated. Fresh Windows 10/11 installation is recommended.",
+          res_net: "🌐 Weak internet. Pages will load slowly.",
+          final: "> RECOMMENDATION: Software cleanup or Windows reinstallation required.",
+          btn_contact: "Contact Master"
+        }
+      };
+
+      const t = msgs[currentLang] || msgs.ru;
+
       await printLine(t.start, 'info', 100);
-      await printLine(t.os + os, 'info', 700);
-      await printLine(t.br + browser, 'info', 500);
-      await printLine(t.hw + cores, 'info', 600);
-      await printLine(t.ram + ram, 'info', 600);
-      await printLine(t.net + netSpeed, 'info', 600);
+      await printLine(t.os + os, 'info', 500);
+      await printLine(t.br + browser, 'info', 400);
+      await printLine(t.hw + cores, 'info', 500);
+      await printLine(t.ram + ram, 'info', 500);
+      await printLine(t.net + netSpeed, 'info', 500);
       
       const speedText = speed > 15 ? t.slow + ` (${Math.round(speed)}ms)` : t.fast + ` (${Math.round(speed)}ms)`;
-      await printLine(t.test + speedText, speed > 15 ? 'warning' : 'success', 800);
+      await printLine(t.test + speedText, speed > 15 ? 'warning' : 'success', 600);
 
-      await printLine(t.res_title, 'warning', 800);
+      await printLine(t.res_title, 'warning', 600);
 
       let reason = t.res_fast;
       let color = 'success';
 
-      // Логика выбора причины на основе РЕАЛЬНЫХ данных
-      if (cores !== "Неизвестно" && cores <= 2) {
-        reason = t.res_weak;
-        color = 'error';
-      } else if (ram !== "Неизвестно" && parseInt(ram) <= 4) {
-        reason = t.res_weak;
-        color = 'error';
+      if (cores !== "?" && cores <= 2) {
+        reason = t.res_weak; color = 'error';
+      } else if (ram !== "?" && parseInt(ram) <= 4) {
+        reason = t.res_weak; color = 'error';
       } else if (netSpeed === '2G' || netSpeed === 'SLOW-2G') {
-        reason = t.res_net;
-        color = 'error';
-      } else if (os === 'Windows' && userAgent.indexOf('Windows NT 6') !== -1) { // Win 7 or 8
-        reason = t.res_old;
-        color = 'error';
+        reason = t.res_net; color = 'error';
+      } else if (os === 'Windows' && userAgent.indexOf('Windows NT 6') !== -1) {
+        reason = t.res_old; color = 'error';
       } else if (speed > 25) {
-        reason = t.res_fast;
-        color = 'warning';
+        reason = t.res_fast; color = 'warning';
       }
 
-      await printLine(reason, color, 1000);
-      await printLine(t.final, 'info', 1200);
+      await printLine(reason, color, 800);
+      await printLine(t.final, 'info', 800);
 
-      // Кнопка "Написать мастеру" в конце диагностики
       setTimeout(() => {
         const btnWrap = document.createElement('div');
         btnWrap.style.marginTop = '10px';
@@ -1507,7 +1520,7 @@ h2{font-size:clamp(28px,3.6vw,42px);line-height:1.15;letter-spacing:-.028em;font
         diagBtn.disabled = false;
         diagBtn.style.opacity = '1';
         diagRunning = false;
-      }, 1500);
+      }, 1000);
     });
   }
 
